@@ -1,4 +1,4 @@
-"""Train a simple Iris flower classifier and make one sample prediction."""
+"""Train the Iris classifier, then predict a species from terminal input."""
 
 from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
@@ -23,10 +23,23 @@ def main() -> None:
     accuracy = accuracy_score(y_test, predictions)
     print(f"Test accuracy: {accuracy:.1%}")
 
-    # Measurements are in centimeters: sepal length/width, petal length/width.
-    sample = [[5.1, 3.5, 1.4, 0.2]]
-    predicted_class = model.predict(sample)[0]
-    print(f"Sample flower prediction: {iris.target_names[predicted_class]}")
+    print("\nEnter the flower measurements in centimeters.")
+    print("Order: sepal length, sepal width, petal length, petal width")
+    print("Example: 5.1, 3.5, 1.4, 0.2")
+
+    while True:
+        raw_measurements = input("Measurements: ").strip()
+        try:
+            measurements = [float(value.strip()) for value in raw_measurements.split(",")]
+            if len(measurements) != 4 or any(value <= 0 for value in measurements):
+                raise ValueError
+        except ValueError:
+            print("Please enter exactly four positive numbers, separated by commas.")
+            continue
+        break
+
+    predicted_class = model.predict([measurements])[0]
+    print(f"Predicted species: {iris.target_names[predicted_class].title()}")
 
 
 if __name__ == "__main__":
